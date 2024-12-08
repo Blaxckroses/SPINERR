@@ -172,7 +172,8 @@
                     icon: "error",
                 });
             } else {
-                tokenUsed = true; 
+                tokenUsed = true;
+                document.getElementById('token').value = '';  // Clear the token field
                 swal({
                     title: "Success",
                     text: "Authentication Successful! You can now spin the wheel.",
