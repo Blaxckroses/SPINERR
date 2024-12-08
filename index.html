@@ -12,8 +12,8 @@
     <title>Spinning Wheel Game</title>
     <style>
         canvas {
-            width: 100% !important;
-            height: auto !important;
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -61,7 +61,7 @@
         var color = color_data;
         var label = label_data;
         var slices = color.length;
-        var sliceDeg = 360 / slices;
+        var sliceDeg = 360/slices;
         var deg = rand(0, 360);
         var speed = 10;
         var ctx = canvas.getContext('2d');
@@ -86,6 +86,18 @@
             ctx.restore();
             deg += sliceDeg;
         }
+        // Draw the arrow
+        drawArrow(ctx, center, width / 2 + 20);
+    }
+
+    function drawArrow(ctx, center, radius) {
+        ctx.beginPath();
+        ctx.moveTo(center, center - radius); // Pointing up
+        ctx.lineTo(center - 15, center - radius + 20);
+        ctx.lineTo(center + 15, center - radius + 20);
+        ctx.closePath();
+        ctx.fillStyle = 'black';
+        ctx.fill();
     }
 
     create_spinner();
@@ -153,6 +165,9 @@
             ctx.restore();
             deg += sliceDeg;
         }
+        // Draw the arrow after spinning
+        drawArrow(ctx, center, width / 2 + 20);
+
         window.requestAnimationFrame(spin);  
     }
 
