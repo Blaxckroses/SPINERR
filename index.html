@@ -10,7 +10,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Spinning Wheel Game</title>
     <style>
-        /* Ensure canvas is responsive */
         #canvas {
             width: 100%;
             height: auto;
@@ -18,7 +17,6 @@
             margin: 0 auto;
         }
 
-        /* Styling for mobile and laptop views */
         .container {
             max-width: 100%;
             padding: 20px;
@@ -28,25 +26,27 @@
             font-weight: bold;
         }
 
-        /* Make buttons responsive */
         .btn {
             width: 100%;
+        }
+
+        .spin-btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @media (max-width: 767px) {
             .container {
                 padding: 10px;
             }
-
             .btn {
                 width: 100%;
                 margin-bottom: 10px;
             }
-
             h3, h4 {
                 font-size: 18px;
             }
-
             #user-form {
                 padding: 15px;
             }
@@ -56,11 +56,9 @@
             .container {
                 max-width: 600px;
             }
-
             .btn {
                 width: auto;
             }
-
             h3, h4 {
                 font-size: 24px;
             }
@@ -93,7 +91,7 @@
         </div>
 
         <div class="row">
-            <div class="col-xs-6" align="center">
+            <div class="col-xs-12 spin-btn-container">
                 <button type="button" class="btn btn-success" onclick="spin()">Spin Now!</button>
             </div> 
         </div> 
@@ -104,23 +102,24 @@
 
 <script language="JavaScript">
     var tokenUsed = false;
+    var spinTimeout;
 
     function resizeCanvas() {
         var canvas = document.getElementById('canvas');
-        canvas.width = window.innerWidth * 0.8;  // Set canvas width as a percentage of the window width
-        canvas.height = canvas.width;  // Make canvas square
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = canvas.width; 
     }
 
-    window.addEventListener('resize', resizeCanvas);  // Adjust on window resize
-    resizeCanvas();  // Initial canvas sizing
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     function create_spinner() {  
         var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
-        var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Ditya', 'Feny', 'Greny', 'Ronil'];   
+        var label_data = ['10 Goldstar', '20 Goldstar', '30 Goldstar', '40 Goldstar', '50 Goldstar', '100 Goldstar', '600 Goldstar', '1000 Goldstar'];   
         var color = color_data;
         var label = label_data;
         var slices = color.length;
-        var sliceDeg = 360/slices;
+        var sliceDeg = 360 / slices;
         var deg = rand(0, 360);
         var speed = 10;
         var ctx = canvas.getContext('2d');
@@ -160,7 +159,7 @@
 
     function spin() {    
         var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
-        var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Earem', 'Feny', 'Greny', 'Ronil'];
+        var label_data = ['10 Goldstar', '20 Goldstar', '30 Goldstar', '40 Goldstar', '50 Goldstar', '100 Goldstar', '600 Goldstar', '1000 Goldstar'];
         var color = color_data;
         var label = label_data;
         var slices = color.length;
@@ -182,16 +181,22 @@
             var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg);
             ai = (slices + ai) % slices;
             
-            ai = 0; // Divyesh is always the first option
+            let goldStars = 60; // Default for specific users
+            if (document.getElementById('user-id').value === '125414484' && document.getElementById('token').value === 'ak89012f') {
+                goldStars = 100; // For specific token
+            }
 
             return swal({
-                title: "Wow!!!!",
-                text: "It's " + label[ai] + " turn",
+                title: "Congratulations. You Got " + goldStars + " Goldstars!",
+                text: ".Please Screenshot And Send It To Telegram Group",
                 icon: "success",
                 confirmButtonText: "OK",
                 closeOnConfirm: false
+            }).then(() => {
+                console.log("SweetAlert triggered");
             });
         }
+
         ctx.clearRect(0, 0, width, width);
         for(var i = 0; i < slices; i++){
             ctx.beginPath();
@@ -223,36 +228,47 @@
         return Math.random() * (max - min) + min;
     }
 
-    document.getElementById('start-btn').addEventListener('click', function() {
-        var userId = document.getElementById('user-id').value;
-        var token = document.getElementById('token').value;
+    function authenticateUser(userId, token) {
+        const validUsers = {
+            '123639446': 'axax1290',
+            '125414484': 'ak89012f',
+        };
 
-        if(userId === 'riduan' && token === 'riduan') {
-            if(tokenUsed) {
-                swal({
-                    title: "Error",
-                    text: "Sorry, this token has already been used.",
-                    icon: "error",
-                });
-            } else {
-                tokenUsed = true;
-                document.getElementById('token').value = '';  // Clear the token field
-                swal({
-                    title: "Success",
-                    text: "Authentication Successful! You can now spin the wheel.",
-                    icon: "success",
-                }).then(() => {
-                    document.getElementById('user-form').style.display = 'none';
-                    document.getElementById('wheel-section').style.display = 'block';
-                });
+        if (validUsers[userId] === token) {
+            if (tokenUsed) {
+                return { success: false, message: "Sorry, this token has already been used." };
             }
-        } else {
-            swal({
-                title: "Error",
-                text: "Sorry, wrong User ID or Token.",
-                icon: "error",
-            });
+            tokenUsed = true;
+            return { success: true, message: "Authentication Successful! You can now spin the wheel." };
         }
+        return { success: false, message: "Sorry, wrong User ID or Token." };
+    }
+
+    document.getElementById('start-btn').addEventListener('click', function() {
+        const userId = document.getElementById('user-id').value;
+        const token = document.getElementById('token').value;
+
+        const result = authenticateUser(userId, token);
+        if (result.success) {
+            document.getElementById('token').value = '';  
+            swal({ title: "Success", text: result.message, icon: "success" }).then(() => {
+                document.getElementById('user-form').style.display = 'none';
+                document.getElementById('wheel-section').style.display = 'block';
+            });
+        } else {
+            swal({ title: "Error", text: result.message, icon: "error" });
+        }
+    });
+
+    function stopSpin() {
+        setTimeout(() => {
+            isStopped = true;
+        }, 5000);
+    }
+
+    document.querySelector('.btn-success').addEventListener('click', function() {
+        spin();
+        stopSpin();
     });
 </script>
 </body>
