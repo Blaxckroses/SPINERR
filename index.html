@@ -4,16 +4,66 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="viewport" content="width=device-width" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Spinning Wheel Game</title>
     <style>
-        canvas {
-            max-width: 100%;
+        /* Ensure canvas is responsive */
+        #canvas {
+            width: 100%;
             height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Styling for mobile and laptop views */
+        .container {
+            max-width: 100%;
+            padding: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        /* Make buttons responsive */
+        .btn {
+            width: 100%;
+        }
+
+        @media (max-width: 767px) {
+            .container {
+                padding: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            h3, h4 {
+                font-size: 18px;
+            }
+
+            #user-form {
+                padding: 15px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+
+            .btn {
+                width: auto;
+            }
+
+            h3, h4 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -53,7 +103,16 @@
 <center>Developed by <a href="https://shinerweb.com/">Shinerweb</a></center>
 
 <script language="JavaScript">
-    var tokenUsed = false;  // Flag to check if the token has already been used
+    var tokenUsed = false;
+
+    function resizeCanvas() {
+        var canvas = document.getElementById('canvas');
+        canvas.width = window.innerWidth * 0.8;  // Set canvas width as a percentage of the window width
+        canvas.height = canvas.width;  // Make canvas square
+    }
+
+    window.addEventListener('resize', resizeCanvas);  // Adjust on window resize
+    resizeCanvas();  // Initial canvas sizing
 
     function create_spinner() {  
         var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
@@ -86,18 +145,6 @@
             ctx.restore();
             deg += sliceDeg;
         }
-        // Draw the arrow
-        drawArrow(ctx, center, width / 2 + 20);
-    }
-
-    function drawArrow(ctx, center, radius) {
-        ctx.beginPath();
-        ctx.moveTo(center, center - radius); // Pointing up
-        ctx.lineTo(center - 15, center - radius + 20);
-        ctx.lineTo(center + 15, center - radius + 20);
-        ctx.closePath();
-        ctx.fillStyle = 'black';
-        ctx.fill();
     }
 
     create_spinner();
@@ -135,7 +182,6 @@
             var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg);
             ai = (slices + ai) % slices;
             
-            // Force the result to be 'Divyesh'
             ai = 0; // Divyesh is always the first option
 
             return swal({
@@ -165,8 +211,6 @@
             ctx.restore();
             deg += sliceDeg;
         }
-        // Draw the arrow after spinning
-        drawArrow(ctx, center, width / 2 + 20);
 
         window.requestAnimationFrame(spin);  
     }
