@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -11,8 +12,8 @@
     <title>Spinning Wheel Game</title>
 </head>
 <body>
-<div class="container">
-    <h4 align="center">Spinning Wheel Game</h4>
+<div class="container">    
+    <h4 align="center">Spinning Wheel Game</h4>     
     <div id="user-form" align="center">
         <h3>Enter Your Details to Spin</h3>
         <div class="form-group">
@@ -32,7 +33,7 @@
                 <div id="wheel">
                     <canvas id="canvas" width="260" height="260"></canvas>
                 </div>
-            </div>
+            </div>    
         </div>
 
         <div class="row">
@@ -41,19 +42,52 @@
             </div>
             <div class="col-xs-6" align="center">
                 <button type="button" id="stop" class="btn btn-info" onclick="stops()">Stop Now!</button>
-            </div>
-        </div>
-    </div>
+            </div> 
+        </div> 
+    </div> 
 </div>
 
 <center>Developed by <a href="https://shinerweb.com/">Shinerweb</a></center>
 
 <script language="JavaScript">
-    var tokenUsed = localStorage.getItem('tokenUsed') === 'true';  // Check if token has already been used
+    var tokenUsed = localStorage.getItem("tokenUsed") === "true";  // Retrieve the token usage status from localStorage
 
-    function create_spinner() {
+    document.getElementById('start-btn').addEventListener('click', function() {
+        var userId = document.getElementById('user-id').value;
+        var token = document.getElementById('token').value;
+
+        if(userId === 'riduan' && token === 'riduan') {
+            if(tokenUsed) {
+                swal({
+                    title: "Error",
+                    text: "Sorry, this token has already been used.",
+                    icon: "error",
+                });
+            } else {
+                tokenUsed = true;
+                localStorage.setItem("tokenUsed", "true"); // Save the token status in localStorage
+                document.getElementById('token').value = '';  // Clear the token field
+                swal({
+                    title: "Success",
+                    text: "Authentication Successful! You can now spin the wheel.",
+                    icon: "success",
+                }).then(() => {
+                    document.getElementById('user-form').style.display = 'none';
+                    document.getElementById('wheel-section').style.display = 'block';
+                });
+            }
+        } else {
+            swal({
+                title: "Error",
+                text: "Sorry, wrong User ID or Token.",
+                icon: "error",
+            });
+        }
+    });
+
+    function create_spinner() {  
         var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
-        var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Ditya', 'Feny', 'Greny', 'Ronil'];
+        var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Ditya', 'Feny', 'Greny', 'Ronil'];   
         var color = color_data;
         var label = label_data;
         var slices = color.length;
@@ -94,7 +128,7 @@
     var lock = false;
     var slowDownRand = 0;
 
-    function spin() {
+    function spin() {    
         var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
         var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Earem', 'Feny', 'Greny', 'Ronil'];
         var color = color_data;
@@ -111,7 +145,7 @@
             if(!lock) {
                 lock = true;
                 slowDownRand = rand(0.994, 0.998);
-            }
+            } 
             speed = speed > 0.2 ? speed *= slowDownRand : 0;
         }
         if(lock && !speed) {
@@ -144,7 +178,7 @@
             ctx.restore();
             deg += sliceDeg;
         }
-        window.requestAnimationFrame(spin);
+        window.requestAnimationFrame(spin);  
     }
 
     function stops() {
@@ -158,49 +192,6 @@
     function rand(min, max) {
         return Math.random() * (max - min) + min;
     }
-
-    // Handle form submission
-    document.getElementById('start-btn').addEventListener('click', function() {
-        var userId = document.getElementById('user-id').value;
-        var token = document.getElementById('token').value;
-
-        if (userId === 'riduan' && token === 'riduan') {
-            if (tokenUsed) {
-                swal({
-                    title: "Error",
-                    text: "Sorry, this token has already been used.",
-                    icon: "error",
-                });
-            } else {
-                localStorage.setItem('tokenUsed', 'true');
-                document.getElementById('token').value = ''; 
-                document.getElementById('start-btn').disabled = true;
-                swal({
-                    title: "Success",
-                    text: "Authentication Successful! You can now spin the wheel.",
-                    icon: "success",
-                }).then(() => {
-                    document.getElementById('user-form').style.display = 'none';
-                    document.getElementById('wheel-section').style.display = 'block';
-                });
-            }
-        } else {
-            swal({
-                title: "Error",
-                text: "Sorry, wrong User ID or Token.",
-                icon: "error",
-            });
-        }
-    });
-
-    // Check token usage on page load
-    window.onload = function() {
-        if (localStorage.getItem('tokenUsed')) {
-            document.getElementById('start-btn').disabled = true;
-            document.getElementById('user-form').style.display = 'none';
-            document.getElementById('wheel-section').style.display = 'block';
-        }
-    };
 </script>
 </body>
 </html>
