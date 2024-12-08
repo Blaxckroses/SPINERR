@@ -12,8 +12,8 @@
     <title>Spinning Wheel Game</title>
     <style>
         canvas {
-            max-width: 100%;
-            height: auto;
+            width: 100% !important;
+            height: auto !important;
         }
     </style>
 </head>
@@ -61,7 +61,7 @@
         var color = color_data;
         var label = label_data;
         var slices = color.length;
-        var sliceDeg = 360/slices;
+        var sliceDeg = 360 / slices;
         var deg = rand(0, 360);
         var speed = 10;
         var ctx = canvas.getContext('2d');
