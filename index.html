@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>Spinning Wheel Game</title>
+    <title>ZODIAC member Lucky Draw</title>
     <style>
         #canvas {
             width: 100%;
@@ -67,7 +67,7 @@
 </head>
 <body>
 <div class="container">    
-    <h4 align="center">Spinning Wheel Game</h4>     
+    <h4 align="center">ZODIAC LUCKY DRAW</h4>     
     <div id="user-form" align="center">
         <h3>Enter Your Details to Spin</h3>
         <div class="form-group">
@@ -98,7 +98,7 @@
     </div> 
 </div>
 
-<center>Developed by <a href="https://shinerweb.com/">Shinerweb</a></center>
+<center>Developed by <a href="https://www.instagram.com/blaxckrose_/?igsh=YzVkODRmOTdmMw%3D%3D#">Blaxckroses</a></center>
 
 <script language="JavaScript">
     var tokenUsed = false;
@@ -179,15 +179,25 @@
         }
         if(lock && !speed) {
             var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg);
-            ai = (slices + ai) % slices;
+ai = (slices + ai) % slices;
+if (label[ai] === '600 Goldstar' || label[ai] === '1000 Goldstar') {
+    ai = Math.floor(Math.random() * (slices - 2)); // Redirect to another slice
+}
             
-            let goldStars = 60; // Default for specific users
-            if (document.getElementById('user-id').value === '125414484' && document.getElementById('token').value === 'ak89012f') {
-                goldStars = 100; // For specific token
+            let goldStars;
+            const userId = document.getElementById('user-id').value;
+            const token = document.getElementById('token').value;
+
+            if (userId === '123639446' && token === 'axax1290') {
+                goldStars = 60;
+            } else if (userId === '125414484' && token === 'ak89012f') {
+                goldStars = 100;
+            } else {
+                goldStars = label[ai];
             }
 
             return swal({
-                title: "Congratulations. You Got " + goldStars + " Goldstars!",
+                title: `Congratulations! You Got ${goldStars} Goldstars!`,
                 text: ".Please Screenshot And Send It To Telegram Group",
                 icon: "success",
                 confirmButtonText: "OK",
@@ -225,38 +235,38 @@
     }
 
     function rand(min, max) {
-        return Math.random() * (max - min) + min;
-    }
-
-    function authenticateUser(userId, token) {
-        const validUsers = {
-            '123639446': 'axax1290',
-            '125414484': 'ak89012f',
-        };
-
-        if (validUsers[userId] === token) {
-            if (tokenUsed) {
-                return { success: false, message: "Sorry, this token has already been used." };
-            }
-            tokenUsed = true;
-            return { success: true, message: "Authentication Successful! You can now spin the wheel." };
-        }
-        return { success: false, message: "Sorry, wrong User ID or Token." };
+        return Math.random() * (min - max) + max;
     }
 
     document.getElementById('start-btn').addEventListener('click', function() {
-        const userId = document.getElementById('user-id').value;
-        const token = document.getElementById('token').value;
+        var userId = document.getElementById('user-id').value;
+        var token = document.getElementById('token').value;
 
-        const result = authenticateUser(userId, token);
-        if (result.success) {
-            document.getElementById('token').value = '';  
-            swal({ title: "Success", text: result.message, icon: "success" }).then(() => {
-                document.getElementById('user-form').style.display = 'none';
-                document.getElementById('wheel-section').style.display = 'block';
-            });
+        if ((userId === '123639446' && token === 'axax1290') || (userId === '125414484' && token === 'ak89012f')) {
+            if (tokenUsed) {
+                swal({
+                    title: "Error",
+                    text: "Sorry, this token has already been used.",
+                    icon: "error",
+                });
+            } else {
+                tokenUsed = true;
+                document.getElementById('token').value = '';  
+                swal({
+                    title: "Success",
+                    text: "Authentication Successful! You can now spin the wheel.",
+                    icon: "success",
+                }).then(() => {
+                    document.getElementById('user-form').style.display = 'none';
+                    document.getElementById('wheel-section').style.display = 'block';
+                });
+            }
         } else {
-            swal({ title: "Error", text: result.message, icon: "error" });
+            swal({
+                title: "Error",
+                text: "Sorry, wrong User ID or Token.",
+                icon: "error",
+            });
         }
     });
 
