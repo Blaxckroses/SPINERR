@@ -4,234 +4,86 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Spinning Wheel Game</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            background-image: url('your-image-url-here.jpg'); /* Add your image URL */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .container {
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-        .form-group {
-            width: 100%;
-        }
-        #wheel-section {
-            margin-top: 20px;
-        }
-        canvas {
-            width: 100% !important;
-            height: auto !important;
-        }
-        .row {
-            margin-top: 20px;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-            h4, h3 {
-                font-size: 16px;
-            }
-            .form-group input {
-                width: 100%;
-            }
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+    <title>Spinning Wheel Game</title>
 </head>
 <body>
-    <div class="container">    
-        <h4 align="center">Spinning Wheel Game</h4>     
-        <div id="user-form" align="center">
-            <h3>Enter Your Details to Spin</h3>
-            <div class="form-group">
-                <label for="user-id">User ID:</label>
-                <input type="text" id="user-id" class="form-control" placeholder="Enter your User ID" required>
-            </div>
-            <div class="form-group">
-                <label for="token">Token:</label>
-                <input type="text" id="token" class="form-control" placeholder="Enter your Token" required>
-            </div>
-            <button class="btn btn-primary" id="start-btn">Start Spinning</button>
+<div class="container">    
+    <h4 align="center">Spinning Wheel Game</h4>     
+    <div id="user-form" align="center">
+        <h3>Enter Your Details to Spin</h3>
+        <div class="form-group">
+            <label for="user-id">User ID:</label>
+            <input type="text" id="user-id" class="form-control" placeholder="Enter your User ID" required>
         </div>
-
-        <div id="wheel-section" style="display: none;">
-            <div class="row">
-                <div class="col-xs-12" align="center">
-                    <div id="wheel">
-                        <canvas id="canvas" width="260" height="260"></canvas>
-                    </div>
-                </div>    
-            </div>
-
-            <div class="row">
-                <div class="col-xs-6" align="center">
-                    <button type="button" class="btn btn-success" onclick="spin()">Spin Now!</button>
-                </div>
-                <div class="col-xs-6" align="center">
-                    <button type="button" id="stop" class="btn btn-info" onclick="stops()">Stop Now!</button>
-                </div> 
-            </div> 
-        </div> 
+        <div class="form-group">
+            <label for="token">Token:</label>
+            <input type="text" id="token" class="form-control" placeholder="Enter your Token" required>
+        </div>
+        <button class="btn btn-primary" id="start-btn">Start Spinning</button>
     </div>
 
-    <center>Developed by <a href="https://shinerweb.com/">Shinerweb</a></center>
+    <div id="wheel-section" style="display: none;">
+        <div class="row">
+            <div class="col-xs-12" align="center">
+                <div id="wheel">
+                    <canvas id="canvas" width="260" height="260"></canvas>
+                </div>
+            </div>    
+        </div>
 
-    <script language="JavaScript">
-        var tokenUsed = false;
+        <div class="row">
+            <div class="col-xs-6" align="center">
+                <button type="button" class="btn btn-success" onclick="spin()">Spin Now!</button>
+            </div>
+            <div class="col-xs-6" align="center">
+                <button type="button" id="stop" class="btn btn-info" onclick="stops()">Stop Now!</button>
+            </div> 
+        </div> 
+    </div> 
+</div>
 
-        function create_spinner() {  
-            var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
-            var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Ditya', 'Feny', 'Greny', 'Ronil'];   
-            var color = color_data;
-            var label = label_data;
-            var slices = color.length;
-            var sliceDeg = 360/slices;
-            var deg = rand(0, 360);
-            var speed = 10;
-            var ctx = canvas.getContext('2d');
-            var width = canvas.width;
-            var center = width/2;
-            ctx.clearRect(0, 0, width, width);
-            for(var i = 0; i < slices; i++){
-                ctx.beginPath();
-                ctx.fillStyle = color[i];
-                ctx.moveTo(center, center);
-                ctx.arc(center, center, width/2, deg2rad(deg), deg2rad(deg + sliceDeg));
-                ctx.lineTo(center, center);
-                ctx.fill();
-                var drawText_deg = deg + sliceDeg / 2;
-                ctx.save();
-                ctx.translate(center, center);
-                ctx.rotate(deg2rad(drawText_deg));
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#fff";
-                ctx.font = 'bold 15px sans-serif';
-                ctx.fillText(label[i], 100, 5);
-                ctx.restore();
-                deg += sliceDeg;
-            }
-        }
-        create_spinner();
+<center>Developed by <a href="https://shinerweb.com/">Shinerweb</a></center>
 
-        var deg = rand(0, 360);
-        var speed = 10;
-        var ctx = canvas.getContext('2d');
-        var width = canvas.width;
-        var center = width/2;
-        var isStopped = false;
-        var lock = false;
-        var slowDownRand = 0;
+<script language="JavaScript">
+    var tokenUsed = localStorage.getItem('tokenUsed') === 'true';  // Check if token has been used
 
-        function spin() {    
-            var color_data = ['#fedf30','#fdb441','#fd6930','#eb5454','#bf9dd3','#29b8cd', "#00f2a6", "#f67"];
-            var label_data = ['Divyesh', 'Roshni', 'Rency', 'Reem', 'Earem', 'Feny', 'Greny', 'Ronil'];
-            var color = color_data;
-            var label = label_data;
-            var slices = color.length;
-            var sliceDeg = 360 / slices;
-            deg += speed;
-            deg %= 360;
+    document.getElementById('start-btn').addEventListener('click', function() {
+        var userId = document.getElementById('user-id').value;
+        var token = document.getElementById('token').value;
 
-            if(!isStopped && speed < 3) {
-                speed += 0.1;
-            }
-            if(isStopped) {
-                if(!lock) {
-                    lock = true;
-                    slowDownRand = rand(0.994, 0.998);
-                } 
-                speed = speed > 0.2 ? speed *= slowDownRand : 0;
-            }
-            if(lock && !speed) {
-                var ai = Math.floor(((360 - deg - 90) % 360) / sliceDeg);
-                ai = (slices + ai) % slices;
-                return swal({
-                    title: "Wow!!!!",
-                    text: "It's " + label[ai] + " turn",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                    closeOnConfirm: false
-                });
-            }
-            ctx.clearRect(0, 0, width, width);
-            for(var i = 0; i < slices; i++){
-                ctx.beginPath();
-                ctx.fillStyle = color[i];
-                ctx.moveTo(center, center);
-                ctx.arc(center, center, width/2, deg2rad(deg), deg2rad(deg + sliceDeg));
-                ctx.lineTo(center, center);
-                ctx.fill();
-                var drawText_deg = deg + sliceDeg / 2;
-                ctx.save();
-                ctx.translate(center, center);
-                ctx.rotate(deg2rad(drawText_deg));
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#fff";
-                ctx.font = 'bold 15px sans-serif';
-                ctx.fillText(label[i], 100, 5);
-                ctx.restore();
-                deg += sliceDeg;
-            }
-            window.requestAnimationFrame(spin);  
-        }
-
-        function stops() {
-            isStopped = true;
-        }
-
-        function deg2rad(deg) {
-            return deg * Math.PI / 180;
-        }
-
-        function rand(min, max) {
-            return Math.random() * (max - min) + min;
-        }
-
-        document.getElementById('start-btn').addEventListener('click', function() {
-            var userId = document.getElementById('user-id').value;
-            var token = document.getElementById('token').value;
-
-            if(userId === 'riduan' && token === 'riduan') {
-                if(tokenUsed) {
-                    swal({
-                        title: "Error",
-                        text: "Sorry, this token has already been used.",
-                        icon: "error",
-                    });
-                } else {
-                    tokenUsed = true;
-                    document.getElementById('token').value = '';  // Clear the token field
-                    swal({
-                        title: "Success",
-                        text: "Authentication Successful! You can now spin the wheel.",
-                        icon: "success",
-                    }).then(() => {
-                        document.getElementById('user-form').style.display = 'none';
-                        document.getElementById('wheel-section').style.display = 'block';
-                    });
-                }
-            } else {
+        if(userId === 'riduan' && token === 'riduan') {
+            if(tokenUsed) {
                 swal({
                     title: "Error",
-                    text: "Sorry, wrong User ID or Token.",
+                    text: "Sorry, this token has already been used.",
                     icon: "error",
                 });
+            } else {
+                tokenUsed = true;
+                localStorage.setItem('tokenUsed', 'true');  // Store the token usage status
+                document.getElementById('token').value = '';  // Clear the token field
+                swal({
+                    title: "Success",
+                    text: "Authentication Successful! You can now spin the wheel.",
+                    icon: "success",
+                }).then(() => {
+                    document.getElementById('user-form').style.display = 'none';
+                    document.getElementById('wheel-section').style.display = 'block';
+                });
             }
-        });
-    </script>
+        } else {
+            swal({
+                title: "Error",
+                text: "Sorry, wrong User ID or Token.",
+                icon: "error",
+            });
+        }
+    });
+</script>
 </body>
 </html>
